@@ -127,9 +127,10 @@ void carregarArquivo();
 
 /* Funções auxiliares */
 int buscarProdutoPorCodigo(int);
+int buscarClientePorCodigo(int);
 void exibirCatalogoProdutos();
-void pagamentoDinheiro(Venda*, float, int); // Auxiliar para pagamento em dinheiro
-void pagamentoCartao(Venda*, float, int, float); // Auxiliar para pagamento em cartao | Juntas essas duas tratam o pagamento misto
+void pagamentoDinheiro(Venda*, float, float); // Auxiliar para pagamento em dinheiro
+void pagamentoCartao(Venda*, float, float); // Auxiliar para pagamento em cartao | Juntas essas duas tratam o pagamento misto
 
 /* --------------     Implementação do código     -------------- */
 int main() {
@@ -327,20 +328,28 @@ void cadastrarCliente() {
 
     do {
         printf("\nDigite o codigo do cliente: ");
+
         if (scanf("%d", &novo.codigo) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
             opcao = 0;
             continue;
-        } if (novo.codigo == s.clientes.dados[buscarProdutoPorCodigo(novo.codigo)].codigo) {
+        } 
+
+        if (novo.codigo <= 0) {
+            printf("\nErro: O codigo deve ser maior que zero!\n");
+            opcao = 0;
+            continue;
+        }
+        
+        // Se retornar indice diferente de -1, o código já existe
+        if (buscarClientePorCodigo(novo.codigo) != -1) {
             printf("\nERRO: Codigo ja existente! Digite um codigo diferente.\n");
             opcao = 0;
             continue;
         } else {
             opcao = 1;
-        } if (novo.codigo <= 0) {
-            printf("\nErro: O codigo deve ser maior que zero!\n");
-        }
+        } 
     } while (opcao == 0 || novo.codigo <= 0);
 
     // Limpa o buffer do teclado
@@ -369,20 +378,30 @@ void cadastrarProduto() {
 
     do {
         printf("\nDigite o codigo do produto: ");
+
         if (scanf("%d", &novo.codigo) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
             opcao = 0;
             continue;
-        } if (novo.codigo == s.produtos.dados[buscarProdutoPorCodigo(novo.codigo)].codigo) {
+        } 
+
+        if (novo.codigo <= 0) {
+            printf("\nErro: O codigo deve ser maior que zero!\n");
+            opcao = 0;
+            continue;
+        }
+        
+        // Se retornar o indice diferente de -1, o codigo já existe
+        if (buscarProdutoPorCodigo(novo.codigo) != -1) {
             printf("\nERRO: Codigo ja existente! Digite um codigo diferente.\n");
             opcao = 0;
             continue;
         } else {
             opcao = 1;
-        } if (novo.codigo <= 0) {
-            printf("\nErro: O codigo deve ser maior que zero!\n");
-        }
+        } 
+        
+        
     } while (opcao == 0 || novo.codigo <= 0);
 
     // Limpa o buffer do teclado
@@ -564,7 +583,6 @@ void fechamentoCaixa() {
         }
     }
 
-    faturamento = s.saldoAbertura + pagaD + pagaC + pagaDC;
     float conciliacao = faturamento - s.saldoAbertura - pagaD - pagaC - pagaDC;
     float ajuste = conciliacao;
 
@@ -590,7 +608,9 @@ void fechamentoCaixa() {
         }
 
         char confirma;
-        printf("\nFechamento divergente! Solicitar registro de ajuste? (s/n): ");
+        
+        printf("\nATENCAO: O caixa nao podera ser fechado porque ha divergencia de valores!\n");
+        printf("Deseja registrar o ajuste e prosseguir com o fechamento? (s/n) -> ");
         scanf(" %c", &confirma);
 
         if (confirma != 's' && confirma != 'S') {
@@ -779,7 +799,7 @@ void novaVenda() {
 
 void processarPagamento(Venda *v) {
     int opcaoPagamento = -1;
-    float valorEmDinheiro = 0.0;
+    float valorDinheiro = 0.0;
     float falta = 0.0;
 
     do {
@@ -801,25 +821,25 @@ void processarPagamento(Venda *v) {
 
         switch (opcaoPagamento) {
             case 1: /* --------------     Pagamento em dinheiro     -------------- */
-                pagamentoDinheiro(v, v->valorTotal, 0); // 0 = Não é misto
+                pagamentoDinheiro(v, v->valorTotal, 0.0);
                 break;
             case 2: /* --------------     Pagamento em Cartao     -------------- */
-                pagamentoCartao(v, v->valorTotal, 0, 0.0); // 0 = Não é misto
+                pagamentoCartao(v, v->valorTotal, 0.0);
                 break;
             case 3: /* --------------     Pagamento misto (Dinheiro + Cartao)     -------------- */
                 do {
                     printf("Digite a parte que sera paga em dinheiro: R$ ");
-                    if (scanf("%f", &valorEmDinheiro) != 1) {
+                    if (scanf("%f", &valorDinheiro) != 1) {
                         printf("Erro! Digite apenas numeros.\n");
                         while (getchar() != '\n');
-                        valorEmDinheiro = -1;
+                        valorDinheiro = -1;
                         continue;
                     }
-                } while (valorEmDinheiro <= 0 || valorEmDinheiro >= v->valorTotal);
+                } while (valorDinheiro <= 0 || valorDinheiro >= v->valorTotal);
                 // Executa o fluxo passando o dinheiro inserido e calcula a falta para o cartão
-                falta = v->valorTotal - valorEmDinheiro;
+                falta = v->valorTotal - valorDinheiro;
                 printf("Restante a ser pago no cartao: R$ %.2f\n", falta);
-                pagamentoCartao(v, falta, 1, valorEmDinheiro);
+                pagamentoCartao(v, falta, valorDinheiro);
                 break;
             case 0: /* --------------     Deixar venda em aberto     -------------- */
                 printf("\nVenda deixada em aberto para pagamento posterior.\n");
@@ -834,13 +854,13 @@ void processarPagamento(Venda *v) {
 }
 
 // Função auxiliar para pagamento em dinheiro
-void pagamentoDinheiro(Venda *v, float valorAPagar, int ehMisto) {
+void pagamentoDinheiro(Venda *v, float valorAPagar, float valorCartao) {
     float valorEntregue = 0.0, troco = 0.0;
 
     do { 
         printf("Digite o valor recebido em dinheiro: R$ "); 
         if (scanf("%f", &valorEntregue) != 1) {
-            printf("Erro! Digite apenas números.\n");
+            printf("Erro! Digite apenas numeros.\n");
             while (getchar() != '\n'); // Limpa o buffer
             valorEntregue = -1;
             continue;
@@ -861,23 +881,27 @@ void pagamentoDinheiro(Venda *v, float valorAPagar, int ehMisto) {
             .troco = troco
         };
 
-        strcpy(p.tipo, ehMisto ? "dc" : "d");
+        if (valorCartao > 0.0) {
+            strcpy(p.tipo, "dc");
+        } else {
+            strcpy(p.tipo, "d");
+        }
 
         adicionarPagamento(p);
         v->situacao = 'p'; 
         printf("Pagamento concluido! Troco: R$ %.2f\n", troco);
     } else {
-        if (!ehMisto) { // Se não for misto ainda, oferece iniciar o misto
+        if (valorCartao == 0.0) { // Se nao for misto ainda, oferece iniciar o misto
             float falta = valorAPagar - valorEntregue;
             char opcao;
             printf("Valor Insuficiente. Faltam R$ %.2f. Usar cartao para o restante? (s/n): ", falta);
-            scanf(" %c", &opcao); // Espaço antes de %c limpa o 'enter' anterior
+            scanf(" %c", &opcao); // Espaco antes de %c limpa o 'enter' anterior
 
             if (opcao == 's' || opcao == 'S') {
-                // Chama a função do cartão passando apenas o valor que falta
-                pagamentoCartao(v, falta, 1, valorEntregue);
+                // Chama a funcao do cartao passando apenas o valor que falta e o dinheiro entregue
+                pagamentoCartao(v, falta, valorEntregue);
             } else {
-                printf("\nOperação cancelada. A venda ficara aberta.\n");
+                printf("\nOperacao cancelada. A venda ficara aberta.\n");
             }
         } else {
             printf("\nErro: Valor em dinheiro insuficiente para a parte mista.\n");
@@ -886,8 +910,10 @@ void pagamentoDinheiro(Venda *v, float valorAPagar, int ehMisto) {
 }
 
 // Função auxiliar para pagamento em cartao
-void pagamentoCartao(Venda *v, float valorAPagar, int ehMisto, float valorEmDinheiro) {
+void pagamentoCartao(Venda *v, float valorCartao, float valorDinheiro) {
     int statusCartao = -1;
+
+    printf("\nValor a cobrar na maquininha: R$ %.2f\n", valorCartao);
     
     do {
         printf("Cartao aprovado (1) ou recusado (2)? ");
@@ -899,18 +925,23 @@ void pagamentoCartao(Venda *v, float valorAPagar, int ehMisto, float valorEmDinh
         }
 
         if (statusCartao == 1) {
-            if (ehMisto) {
-                s.saldoCaixa += valorEmDinheiro; // Só entra no caixa o dinheiro físico
+            if (valorDinheiro > 0.0) {
+                s.saldoCaixa += valorDinheiro; // So entra na gaveta o dinheiro fisico
             }
 
             Pagamento p = {
                 .numeroVenda = v->numeroVenda,
                 .valorPago = v->valorTotal,
-                .valorEntregue = ehMisto ? valorEmDinheiro : 0.0,
+                .valorEntregue = valorDinheiro,
                 .troco = 0.0
             };
 
-            strcpy(p.tipo, ehMisto ? "dc" : "d");
+            // Se teve dinheiro junto eé "dc" (misto), se nao eé "c" (cartao)
+            if (valorDinheiro > 0.0) {
+                strcpy(p.tipo, "dc");
+            } else {
+                strcpy(p.tipo, "c");
+            }
 
             adicionarPagamento(p);
             v->situacao = 'p';
@@ -977,7 +1008,7 @@ void recuperarVendaAberta() {
     processarPagamento(&s.vendas.dados[posicaoVenda]);
 }
 
-/* --------------     Funções auxiliares de busca de produto por código     -------------- */
+/* --------------     Funções auxiliares de busca por código     -------------- */
 
 // Busca a posicao de um produto no vetor atraves do codigo digitado
 int buscarProdutoPorCodigo(int codigo) {
@@ -986,7 +1017,17 @@ int buscarProdutoPorCodigo(int codigo) {
             return i;
         }
     }
-    return -1;
+    return -1; // Produto nao encontrado = codigo livre para registro
+}
+
+// Busca a posicao de um cliente no vetor atraves do codigo digitado
+int buscarClientePorCodigo(int codigo) {
+    for (int i = 0; i < s.clientes.total; i++) {
+        if (s.clientes.dados[i].codigo == codigo) {
+            return i;
+        }
+    }
+    return -1; // Cliente nao encontrado = codigo livre para registro
 }
 
 // Exibe a tabela de produtos disponiveis antes de adicionar itens ao carrinho

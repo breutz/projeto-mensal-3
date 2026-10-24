@@ -1,4 +1,6 @@
-/* --------------     Comentario principal     -------------- */
+/* Sistema de Gerenciamento Automaziado de Mercearia com cadastros flexíveis, estruturas dinâmicas de dados,
+vendas com carrinho, pagamentos combinados, sangria, controle de caixa, relatórios e persistência em
+arquivo. */
 
 /* --------------     Bibliotecas     -------------- */
 #include <stdio.h>
@@ -136,11 +138,26 @@ void pagamentoCartao(Venda*, float, float); // Auxiliar para pagamento em cartao
 int main() {
     char resposta;
 
-    printf("\n==================================================\n");
-    printf("                   BERE IS NICE                   \n");
-    printf("==================================================\n");
-    printf("Deseja carregar os dados salvos anteriormente? (s/n) -> ");
-    scanf(" %c", &resposta);
+    printf("\n================== BERE IS NICE ================== <- e minimalista (:\n");
+    do {
+        printf("\nCarregar os dados salvos anteriormente? (s/n): ");
+
+        if (scanf(" %c", &resposta) != 1){
+            printf("\nERRO: Digite apenas s ou n!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            continue;
+        }
+
+        if (resposta == 's' || resposta == 'S') {
+            break;
+        } else if (resposta == 'n' || resposta == 'N'){
+            break;
+        } else {
+            printf("\nERRO: Digite apenas s ou n!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            continue;
+        }
+    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
 
     if (resposta == 's' || resposta == 'S') {
         carregarArquivo();
@@ -149,14 +166,31 @@ int main() {
     menuPrincipal();
 
     printf("\n==================================================\n");
-    printf("Deseja salvar os dados antes de fechar? (s/n) -> ");
-    scanf(" %c", &resposta);
+    do {
+        printf("\nSalvar os dados antes de fechar? (s/n): ");
+
+        if (scanf(" %c", &resposta) != 1){
+            printf("\nERRO: Digite apenas s ou n!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            continue;
+        }
+
+        if (resposta == 's' || resposta == 'S') {
+            break;
+        } else if (resposta == 'n' || resposta == 'N'){
+            break;
+        } else {
+            printf("\nERRO: Digite apenas s ou n!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            continue;
+        }
+    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
 
     if (resposta == 's' || resposta == 'S') {
         salvarArquivo();
     }
 
-    printf("\nEncerrando!\nBere is Nice!\n");
+    printf("\nEncerrando!\nBere is Nice! (╯°□°）╯︵ ┻━┻\n");
     return 0;
 }
 
@@ -165,16 +199,14 @@ int main() {
 void menuPrincipal() {
     int opcao = -1;
     do {
-        printf("\n==================================================\n");
-        printf("                   BERE IS NICE                   \n");
-        printf("==================================================\n");
-        printf("\n1 ...................................... Cadastros\n");
-        printf("2 ......................................... Vendas\n");
-        printf("3 .............................. Abertura de Caixa\n");
-        printf("4 ............................ Fechamento de Caixa\n");
-        printf("5 ..................................... Relatorios\n");
-        printf("0 ........................................... Sair\n");
-        printf("\nDigite o codigo do submenu em que deseja entrar -> ");
+        printf("\n================== BERE IS NICE ==================\n");
+        printf("1. %47s\n", "Cadastros");
+        printf("2. %47s\n", "Vendas");
+        printf("3. %47s\n", "Abertura de Caixa");
+        printf("4. %47s\n", "Fechamento de Caixa");
+        printf("5. %47s\n", "Relatorios");
+        printf("0. %47s\n", "Sair");
+        printf("\nDigite o codigo do submenu em que deseja entrar: ");
         if (scanf("%d", &opcao) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
@@ -188,7 +220,7 @@ void menuPrincipal() {
             break;
         case 2:
             if (s.caixaAberto == 0) {
-                printf("\nErro: O caixa precisa ser aberto antes de realizar vendas!\n");
+                printf("\nErro: O caixa precisa ser aberto antes!\n");
             } else {
                 menuVendas();
             }
@@ -216,13 +248,11 @@ void menuPrincipal() {
 void menuCadastros() {
     int opcao = -1;
     do {
-        printf("\n==================================================\n");
-        printf("                 MENU DE CADASTROS                \n");
-        printf("==================================================\n");
-        printf("\n1 ........................... Cadastro de clientes\n");
-        printf("2 ........................... Cadastro de produtos\n");
-        printf("0 ....................... Voltar ao menu principal\n");
-        printf("\nDigite o codigo do submenu em que deseja entrar -> ");
+        printf("\n================ MENU DE CADASTROS ===============\n");
+        printf("1. %47s\n", "Cadastro de clientes");
+        printf("2. %47s\n", "Cadastro de produtos");
+        printf("0. %47s\n", "Voltar ao Menu Principal");
+        printf("\nDigite o codigo do submenu em que deseja entrar: ");
         if (scanf("%d", &opcao) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
@@ -249,14 +279,12 @@ void menuCadastros() {
 void menuVendas() {
     int opcao = -1;
     do {
-        printf("\n==================================================\n");
-        printf("                   MENU DE VENDAS                 \n");
-        printf("==================================================\n");
-        printf("\n1 ..................................... Nova Venda\n");
-        printf("2 ........................................ Sangria\n");
-        printf("3 ...................................... Pagamento\n");
-        printf("0 ....................... Voltar ao menu principal\n");
-        printf("\nDigite o codigo do submenu em que deseja entrar -> ");
+        printf("\n================== MENU DE VENDAS ================\n");
+        printf("1. %47s\n", "Nova Venda");
+        printf("2. %47s\n", "Sangria");
+        printf("3. %47s\n", "Pagamento");
+        printf("0. %47s\n", "Voltar ao menu principal");
+        printf("\nDigite o codigo do submenu em que deseja entrar: ");
         if (scanf("%d", &opcao) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
@@ -286,14 +314,12 @@ void menuVendas() {
 void menuRelatorios() {
     int opcao = -1;
     do {
-        printf("\n==================================================\n");
-        printf("                MENU DE RELATORIOS                \n");
-        printf("==================================================\n");
-        printf("\n1 ........................... Listagem de Clientes\n");
-        printf("2 ........................... Listagem de Produtos\n");
-        printf("3 ............................. Listagem de Vendas\n");
-        printf("0 ................................. Menu Principal\n");
-        printf("\nDigite o codigo do submenu em que deseja entrar -> ");
+        printf("\n=============== MENU DE RELATORIOS ===============\n");
+        printf("1. %47s\n", "Listagem de Clientes");
+        printf("2. %47s\n", "Listagem de Produtos");
+        printf("3. %47s\n", "Listagem de Vendas");
+        printf("0. %47s\n", "Voltar ao Menu Principal");
+        printf("\nDigite o codigo do submenu em que deseja entrar: ");
         if (scanf("%d", &opcao) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
@@ -387,14 +413,14 @@ void cadastrarProduto() {
         } 
 
         if (novo.codigo <= 0) {
-            printf("\nErro: O codigo deve ser maior que zero!\n");
+            printf("\nErro: Codigo deve ser maior que zero!\n");
             opcao = 0;
             continue;
         }
         
         // Se retornar o indice diferente de -1, o codigo já existe
         if (buscarProdutoPorCodigo(novo.codigo) != -1) {
-            printf("\nERRO: Codigo ja existente! Digite um codigo diferente.\n");
+            printf("\nERRO: Codigo existente! Digite novamente.\n");
             opcao = 0;
             continue;
         } else {
@@ -426,7 +452,7 @@ void cadastrarProduto() {
             opcao = 1;
         }
         if (novo.precoCompra <= 0) {
-            printf("\nErro: O preco de compra deve ser maior que zero!\n");
+            printf("\nErro: Preco de compra deve ser maior que zero!\n");
         }
     } while (opcao == 0 || novo.precoCompra <= 0);
 
@@ -471,7 +497,7 @@ void cadastrarProduto() {
     } while (opcao == 0);
 
     adicionarProduto(novo);
-    printf("\nProduto cadastrado com sucesso! Preco de venda: R$ %.2f\n", novo.precoVenda);
+    printf("\nProduto cadastrado com sucesso!\n%-39s R$ %7.2f\n", "Preco de venda:", novo.precoVenda);
 }
 
 /* --------------     Funções de cadastro dinânimo com gerenciamento de memória     -------------- */
@@ -544,7 +570,7 @@ void aberturaCaixa() {
         printf("\nDigite o valor de abertura (fundo de troco): R$ ");
         scanf("%f", &valor);
         if (valor < 0) {
-            printf("ERRO: O valor de abertura nao pode ser negativo!\n");
+            printf("\nERRO: O valor de abertura nao pode ser negativo!\n");
         }
     } while (valor < 0);
 
@@ -586,41 +612,44 @@ void fechamentoCaixa() {
     float conciliacao = faturamento - s.saldoAbertura - pagaD - pagaC - pagaDC;
     float ajuste = conciliacao;
 
-    printf("\n==================================================\n");
-    printf("                FECHAMENTO DE CAIXA               \n");
+    printf("\n============== FECHAMENTO DE CAIXA ===============\n");
+    printf("%-35s %14d\n", "Quantidade de vendas pagas:", qtdPagas);
+    printf("%-35s R$ %11.2f\n", "Faturamento total do dia:", faturamento);
+    printf("%-35s R$ %11.2f\n", "Valor de abertura:", s.saldoAbertura);
+    printf("%-35s R$ %11.2f\n", "Valor pago em Dinheiro:", pagaD);
+    printf("%-35s R$ %11.2f\n", "Valor pago em Cartao:", pagaC);
+    printf("%-35s R$ %11.2f\n", "Valor pago em Dinheiro e Cartao:", pagaDC);
+    printf("%-35s R$ %11.2f\n", "Total de sangrias:", s.totalSangrias);
+    printf("%-35s R$ %11.2f\n", "Saldo fisico na gaveta:", s.saldoCaixa);
+    printf("--------------------------------------------------\n");
+    printf("%-35s %14.2f\n",  "Resultado da conciliacao:", conciliacao);
     printf("==================================================\n");
-    printf("Quantidade de vendas pagas ................. %d\n", qtdPagas);
-    printf("Faturamento total do dia .............. R$ %.2f\n", faturamento);
-    printf("Valor de abertura ..................... R$ %.2f\n", s.saldoAbertura);
-    printf("Valor pago em Dinheiro ................ R$ %.2f\n", pagaD);
-    printf("Valor pago em Cartao .................. R$ %.2f\n", pagaC);
-    printf("Valor pago em Dinheiro e Cartao ....... R$ %.2f\n", pagaDC);
-    printf("Total de sangrias ..................... R$ %.2f\n", s.totalSangrias);
-    printf("Saldo fisico .......................... R$ %.2f\n", s.saldoCaixa);
-    printf("Resultado da conciliacao ................. %.2f\n", conciliacao);
 
     // Tratamento de fechamento divergente
     if (conciliacao != 0.0) {
         if (ajuste > 0.0) {
-            printf("\nAjuste do Caixa: SOBRA (Divergencia positiva de R$ %.2f)\n", ajuste);
+            printf("\nAjuste do Caixa: SOBRA\nDivergencia positiva de R$ %.2f\n", ajuste);
         } else {
-            printf("\nAjuste do Caixa: FALTA (Divergencia negativa de R$ %.2f)\n", ajuste);
+            printf("\nAjuste do Caixa: FALTA\nDivergencia negativa de R$ %.2f\n", ajuste);
         }
 
         char confirma;
         
-        printf("\nATENCAO: O caixa nao podera ser fechado porque ha divergencia de valores!\n");
-        printf("Deseja registrar o ajuste e prosseguir com o fechamento? (s/n) -> ");
+        printf("\n==================================================\n");
+        printf("ATENCAO: O caixa nao podera ser fechado!\n");
+        printf("Ha divergencia de valores no fechamento.\n");
+        printf("--------------------------------------------------\n");
+        printf("Deseja registrar o ajuste e fechar? (s/n): ");
         scanf(" %c", &confirma);
 
         if (confirma != 's' && confirma != 'S') {
-            printf("\nFechamento IMPEDIDO conforme regras do sistema. Ajuste os valores antes de fechar.\n");
+            printf("\nFechamento IMPEDIDO conforme regras do sistema.\nAjuste os valores antes de fechar.\n");
             return; // Impede o fechamento do caixa
         }
         
-        printf("Ajuste de %.2f registrado no sistema com sucesso!\n", ajuste);
+        printf("\nAjuste de %.2f registrado com sucesso!\n", ajuste);
     } else {
-        printf("\nAjuste do Caixa: ZERO (Fechamento correto, sem divergencias).\n");
+        printf("\nAjuste do Caixa: ZERO\nFechamento correto, sem divergencias.\n");
     }
 
     // Zera tudo
@@ -638,28 +667,26 @@ void realizarSangria() {
         return;
     }
 
-    printf("\n==================================================\n");
-    printf("            RETIRADA DE CAIXA (SANGRIA)           \n");
-    printf("==================================================\n");
+    printf("\n=========== RETIRADA DE CAIXA (SANGRIA) ==========\n");
     printf("Saldo atual em dinheiro na gaveta: R$ %.2f\n", s.saldoCaixa);
     printf("Reserva obrigatoria para troco: R$ 50.00\n");
 
     if (s.saldoCaixa <= 50.0) {
-        printf("\nATENCAO: Saldo insuficiente. O valor minimo de R$ 50.00 deve ser preservado!\n");
+        printf("\nATENCAO: Saldo insuficiente.\nO valor minimo de R$ 50.00 deve ser preservado!\n");
         return;
     }
 
     float valorRetirada = 0.0;
-    printf("\nDigite o valor da retirada -> R$ ");
+    printf("\nDigite o valor da retirada: R$ ");
     scanf("%f", &valorRetirada);
 
     if (valorRetirada <= 0.0) {
-        printf("\nERRO: O valor da retirada deve ser maior que zero!\n");
+        printf("\nERRO: Valor da retirada deve ser maior que zero!\n");
         return;
     }
 
     if ((s.saldoCaixa - valorRetirada) < 50.0) {
-        printf("\nERRO: Retirada nao permitida! Deixaria menos de R$ 50.00 no caixa.\n");
+        printf("\nERRO: Retirada nao permitida!\nDeixaria menos de R$ 50.00 no caixa.\n");
         printf("Valor maximo permitido para retirada: R$ %.2f\n", s.saldoCaixa - 50.0);
         return;
     }
@@ -668,7 +695,7 @@ void realizarSangria() {
     s.totalSangrias += valorRetirada;
 
     printf("\nSangria realizada com sucesso!\n");
-    printf("Valor retirado: R$ %.2f | Novo saldo em caixa: R$ %.2f\n", valorRetirada, s.saldoCaixa);
+    printf("Valor retirado: R$ %.2f\nNovo saldo em caixa: R$ %.2f\n", valorRetirada, s.saldoCaixa);
 }
 
 /* --------------     Funções de gerenciamento de venda e pagamento     -------------- */
@@ -681,20 +708,64 @@ void novaVenda() {
 
     Venda v = {0};
     v.numeroVenda = s.vendas.total + 1;
-    printf("Digite o codigo do cliente (0 para cliente avulso): ");
-    scanf("%d", &v.codigoCliente);
+    int opcao = 0;
+
+    do {
+        printf("\nDigite o codigo do cliente (0 = cliente avulso): ");
+
+        if (scanf("%d", &v.codigoCliente) != 1) {
+            printf("\nERRO: Digite apenas numeros!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            opcao = 0;
+            continue;
+        } 
+
+        if (v.codigoCliente < 0) {
+            printf("\nErro: O codigo deve ser maior ou igual a zero!\n");
+            opcao = 0;
+            continue;
+        }
+        
+        if (v.codigoCliente == 0) {
+            printf("\n==================================================\n");
+            printf("%-7s%-2d | %-8s %12.12s | %-7s %6s\n",
+            "Venda #", v.numeroVenda,
+            "Cliente:", "AVULSO",
+            "Status:", "ABERTO");
+            printf("--------------------------------------------------");
+            break;
+        }
+
+        if (buscarClientePorCodigo(v.codigoCliente) == -1) {
+            printf("\nCliente nao encontrado!\n");
+            opcao = 0;
+            continue;
+        } else {
+            printf("\n==================================================\n");
+            printf("%-7s%-2d | %-8s %12.12s | %-7s %6s\n",
+            "Venda #", v.numeroVenda,
+            "Cliente:", s.clientes.dados[buscarClientePorCodigo(v.codigoCliente)].nome,
+            "Status:", "ABERTO");
+            printf("--------------------------------------------------");
+            opcao = 1;
+        } 
+    } while (opcao == 0 || v.codigoCliente <= 0);
 
     ItemCarrinho *itens = NULL;
     int totalItens = 0;
     float subtotal = 0.0;
-    char continua = 's';
+    char resposta = 's';
 
     do {
         exibirCatalogoProdutos();
         int codigoProduto, posicaoProduto;
 
         printf("\nDigite o codigo do produto (0 para voltar): ");
-        scanf("%d", &codigoProduto);
+        if (scanf("%d", &codigoProduto) != 1) {
+            printf("\nERRO: Digite apenas numeros!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            continue;
+        } 
 
         if (codigoProduto == 0) {
             break;
@@ -712,7 +783,7 @@ void novaVenda() {
         }
 
         int quantidade;
-        printf("Digite a quantidade desejada: ");
+        printf("\nDigite a quantidade desejada: ");
         scanf("%d", &quantidade);
 
         if (quantidade <= 0) {
@@ -721,9 +792,9 @@ void novaVenda() {
         }
         
         if (quantidade > s.produtos.dados[posicaoProduto].estoque) {
-            printf("\nALERTA: Quantidade solicidada (%d) supera a quantidade em estoque (%d)!\n", quantidade, s.produtos.dados[posicaoProduto].estoque);
+            printf("\nALERTA: Quantidade solicidada (%d) indisponivel!\nEstoque disponivel: %d\n", quantidade, s.produtos.dados[posicaoProduto].estoque);
             char confirma;
-            printf("\nDeseja comprar apenas as %d unidades disponiveis? (s/n)\n", s.produtos.dados[posicaoProduto].estoque);
+            printf("\nDeseja comprar as %d un. disponiveis? (s/n)\n", s.produtos.dados[posicaoProduto].estoque);
             scanf(" %c", &confirma);
 
             if (confirma == 's' || confirma == 'S') {
@@ -758,15 +829,32 @@ void novaVenda() {
 
         // Alerta se o produto atingiu ou ficou abaixo do estoque mínimo
         if (s.produtos.dados[posicaoProduto].estoque <= s.produtos.dados[posicaoProduto].estoqueMinimo) {
-            printf("\nAVISO: O produto '%s' alcancou o limite minimo de estoque! Estoque atual: %d.\n", s.produtos.dados[posicaoProduto].descricao, s.produtos.dados[posicaoProduto].estoque);
+            printf("\nAVISO: '%s' alcancou o limite minimo de estoque!\nEstoque atual: %d.\n", s.produtos.dados[posicaoProduto].descricao, s.produtos.dados[posicaoProduto].estoque);
         }
 
-        printf("\nItem adicionado com sucesso! Subtotal atual: R$ %.2f\n", subtotal);
+        printf("\nItem adicionado com sucesso!\nSubtotal atual: R$ %.2f\n", subtotal);
 
-        printf("Deseja adicionar outro item? (s/n): ");
-        scanf(" %c", &continua);
+        do {
+            printf("\nDeseja adicionar outro item? (s/n): ");
 
-    } while (continua == 's' || continua == 'S');
+            if (scanf(" %c", &resposta) != 1){
+                printf("\nERRO: Digite apenas s ou n!\n");
+                while (getchar() != '\n'); // Limpa a letra digitada do buffer
+                continue;
+            }
+
+            if (resposta == 's' || resposta == 'S') {
+                break;
+            } else if (resposta == 'n' || resposta == 'N'){
+                break;
+            } else {
+                printf("\nERRO: Digite apenas s ou n!\n");
+                while (getchar() != '\n'); // Limpa a letra digitada do buffer
+                continue;
+            }
+        } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+
+    } while (resposta == 's' || resposta == 'S');
 
     if (totalItens == 0) {
         printf("\nNenhum item adicionado. Venda cancelada.\n");
@@ -775,7 +863,7 @@ void novaVenda() {
 
     // Aplica desconto personalizado
     float descPercentual = 0.0;
-    printf("\nDigite o percentual de desconto (0 para nenhum): ");
+    printf("\nDigite o percentual de desconto: ");
     scanf("%f", &descPercentual);
     if (descPercentual > 0.0) {
         if (descPercentual > 100.0) {
@@ -785,7 +873,7 @@ void novaVenda() {
         }
 
         subtotal = subtotal * (1.0 - descPercentual / 100.0);
-        printf("Desconto aplicado! Novo total da venda: R$ %.2f\n", subtotal);
+        printf("\nDesconto aplicado com sucesso!\nNovo total da venda: R$ %.2f\n", subtotal);
     }
 
     v.itens = itens;
@@ -803,15 +891,14 @@ void processarPagamento(Venda *v) {
     float falta = 0.0;
 
     do {
-        printf("\n==================================================\n");
-        printf("               PROCESSAR PAGAMENTO                \n");
-        printf("==================================================\n");
-        printf("\nValor total a pagar: R$ %.2f\n", v->valorTotal);
-        printf("1 ....................................... Dinheiro\n");
-        printf("2 ......................................... Cartao\n");
-        printf("3 ...................... Misto (Dinheiro + Cartao)\n");
-        printf("0 ............................ Deixar venda aberta\n");
-        printf("\nDigite a forma de pagamento desejada -> ");
+        printf("\n============== PROCESSAR PAGAMENTO ===============\n");
+        printf("%-39s R$ %7.2f\n", "Valor total a pagar: ", v->valorTotal);
+        printf("--------------------------------------------------\n");
+        printf("1. %47s\n", "Dinheiro");
+        printf("2. %47s\n", "Cartao");
+        printf("3. %47s\n", "Misto (Dinheiro + Cartao)");
+        printf("0. %47s\n", "Deixar venda em aberto");
+        printf("\nDigite a forma de pagamento desejada: ");
         if (scanf("%d", &opcaoPagamento) != 1) {
             printf("\nERRO: Digite apenas numeros!\n");
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
@@ -893,18 +980,35 @@ void pagamentoDinheiro(Venda *v, float valorAPagar, float valorCartao) {
     } else {
         if (valorCartao == 0.0) { // Se nao for misto ainda, oferece iniciar o misto
             float falta = valorAPagar - valorEntregue;
-            char opcao;
-            printf("Valor Insuficiente. Faltam R$ %.2f. Usar cartao para o restante? (s/n): ", falta);
-            scanf(" %c", &opcao); // Espaco antes de %c limpa o 'enter' anterior
+            char resposta;
+            do {
+                printf("Valor Insuficiente. Faltam R$ %.2f. \nUsar cartao para o restante? (s/n): ", falta);
 
-            if (opcao == 's' || opcao == 'S') {
+                if (scanf(" %c", &resposta) != 1){
+                    printf("\nERRO: Digite apenas s ou n!\n");
+                    while (getchar() != '\n'); // Limpa a letra digitada do buffer
+                    continue;
+                }
+
+                if (resposta == 's' || resposta == 'S') {
+                    break;
+                } else if (resposta == 'n' || resposta == 'N'){
+                    break;
+                } else {
+                    printf("\nERRO: Digite apenas s ou n!\n");
+                    while (getchar() != '\n'); // Limpa a letra digitada do buffer
+                    continue;
+                }
+            } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+
+            if (resposta == 's' || resposta == 'S') {
                 // Chama a funcao do cartao passando apenas o valor que falta e o dinheiro entregue
                 pagamentoCartao(v, falta, valorEntregue);
             } else {
                 printf("\nOperacao cancelada. A venda ficara aberta.\n");
             }
         } else {
-            printf("\nErro: Valor em dinheiro insuficiente para a parte mista.\n");
+            printf("\nErro: Valor insuficiente para a parte mista.\n");
         }
     }
 }
@@ -916,9 +1020,9 @@ void pagamentoCartao(Venda *v, float valorCartao, float valorDinheiro) {
     printf("\nValor a cobrar na maquininha: R$ %.2f\n", valorCartao);
     
     do {
-        printf("Cartao aprovado (1) ou recusado (2)? ");
+        printf("\nCartao aprovado (1) ou recusado (2)? ");
         if (scanf("%d", &statusCartao) != 1) {
-            printf("Erro! Digite apenas numeros.\n");
+            printf("\nErro! Digite apenas 1 ou 2.\n");
             while (getchar() != '\n');
             statusCartao = -1;
             continue;
@@ -950,7 +1054,7 @@ void pagamentoCartao(Venda *v, float valorCartao, float valorDinheiro) {
         } else if (statusCartao == 2) {
             printf("\nCartao recusado! A venda ficara aberta.\n");
         } else {
-            printf("Opcao invalida! Digite 1 para Aprovado ou 2 para Recusado.\n");
+            printf("\nErro! Digite apenas 1 ou 2.\n");
         }
     } while (statusCartao != 1 && statusCartao != 2);
 }
@@ -963,13 +1067,11 @@ void recuperarVendaAberta() {
     }
 
     int totalAbertas = 0;
-    printf("\n==================================================\n");
-    printf("              VENDAS PENDENTES (ABERTAS)          \n");
-    printf("==================================================\n");
+    printf("\n=========== VENDAS PENDENTES (ABERTAS) ===========\n");
 
     for (int i = 0; i < s.vendas.total; i++) {
         if (s.vendas.dados[i].situacao == 'a') {
-            printf("Venda #%d | Cliente Cod: %d | Total: R$ %.2f | Itens: %d\n",
+            printf("Venda #%d | Cliente: %d | Total: R$ %.2f | Itens: %d\n",
                    s.vendas.dados[i].numeroVenda,
                    s.vendas.dados[i].codigoCliente,
                    s.vendas.dados[i].valorTotal,
@@ -979,12 +1081,12 @@ void recuperarVendaAberta() {
     }
 
     if (totalAbertas == 0) {
-        printf("Nao existem vendas em aberto no momento!\n");
+        printf("\nNao existem vendas em aberto no momento!\n");
         return;
     }
 
     int numeroEscolhido = 0;
-    printf("\nDigite o numero da venda que deseja pagar (ou 0 para voltar) -> ");
+    printf("\nDigite o numero da venda a pagar (0 = voltar): ");
     scanf("%d", &numeroEscolhido);
 
     if (numeroEscolhido == 0) {
@@ -1010,7 +1112,7 @@ void recuperarVendaAberta() {
 
 /* --------------     Funções auxiliares de busca por código     -------------- */
 
-// Busca a posicao de um produto no vetor atraves do codigo digitado
+// Busca a posicao de um produto e retorna o código
 int buscarProdutoPorCodigo(int codigo) {
     for (int i = 0; i < s.produtos.total; i++) {
         if (s.produtos.dados[i].codigo == codigo) {
@@ -1020,7 +1122,7 @@ int buscarProdutoPorCodigo(int codigo) {
     return -1; // Produto nao encontrado = codigo livre para registro
 }
 
-// Busca a posicao de um cliente no vetor atraves do codigo digitado
+// Busca a posicao de um cliente e retorna o código
 int buscarClientePorCodigo(int codigo) {
     for (int i = 0; i < s.clientes.total; i++) {
         if (s.clientes.dados[i].codigo == codigo) {
@@ -1037,19 +1139,19 @@ void exibirCatalogoProdutos() {
         return;
     }
 
-    printf("\n================ CATALOGO DE PRODUTOS ================\n");
-    printf("%-6s | %-20s | %-12s | %-8s | %-7s\n", "COD", "DESCRICAO", "CATEGORIA", "PRECO", "ESTOQUE");
-    printf("------------------------------------------------------\n");
+    printf("\n============== CATALOGO DE PRODUTOS ==============\n");
+    printf("%-4s | %-9s | %-9s | %-9s | %-7s\n", "COD", "DESCRICAO", "CATEGORIA", "PRECO", "ESTOQUE");
+    printf("--------------------------------------------------\n");
 
     for (int i = 0; i < s.produtos.total; i++) {
-        printf("%-6d | %-20s | %-12s | R$ %-5.2f | %-7d\n",
+        printf("%-4d | %-9.9s | %-9.9s | R$ %6.2f | %7d\n",
                s.produtos.dados[i].codigo,
                s.produtos.dados[i].descricao,
                s.produtos.dados[i].categoria,
                s.produtos.dados[i].precoVenda,
                s.produtos.dados[i].estoque);
     }
-    printf("======================================================\n");
+    printf("==================================================\n");
 }
 
 /* --------------     Funções de relatórios     -------------- */
@@ -1060,17 +1162,17 @@ void listarClientes() {
         return;
     }
 
-    printf("\n==================================================\n");
-    printf("              RELATORIO DE CLIENTES               \n");
-    printf("==================================================\n");
+    printf("\n============= RELATORIO DE CLIENTES ==============\n");
 
     for (int i = 0; i < s.clientes.total; i++) {
-        printf("\nCliente #%d:\n", i + 1);
-        printf("Codigo: %d\n", s.clientes.dados[i].codigo);
-        printf("Nome: %s (Social: %s)\n", s.clientes.dados[i].nome, s.clientes.dados[i].nomeSocial);
-        printf("CPF: %s\n", s.clientes.dados[i].cpf);
-        printf("Endereco: %s, Bairro: %s\n", s.clientes.dados[i].endereco, s.clientes.dados[i].bairro);
-        printf("Telefone: %s\n", s.clientes.dados[i].telefone);
+        printf("%-46s#%3d\n", "Cliente:", i + 1);
+        printf("%-35s%15d\n", "Codigo:", s.clientes.dados[i].codigo);
+        printf("%-15s %34.34s\n", "Nome:", s.clientes.dados[i].nome);
+        printf("%-15s %34.34s\n", "Nome Social:", s.clientes.dados[i].nomeSocial);
+        printf("%-15s %34.34s\n", "CPF:", s.clientes.dados[i].cpf);
+        printf("%-15s %34.34s\n", "Endereco:", s.clientes.dados[i].endereco);
+        printf("%-15s %34.34s\n", "Bairro:", s.clientes.dados[i].bairro);
+        printf("%-15s %34.34s\n", "Telefone:", s.clientes.dados[i].telefone);
         printf("--------------------------------------------------\n");
     }
 }
@@ -1081,20 +1183,18 @@ void listarProdutos() {
         return;
     }
 
-    printf("\n==================================================\n");
-    printf("              RELATORIO DE PRODUTOS               \n");
-    printf("==================================================\n");
+    printf("\n============= RELATORIO DE PRODUTOS ==============\n");
 
     for (int i = 0; i < s.produtos.total; i++) {
-        printf("\nProduto #%d:\n", i + 1);
-        printf("Codigo: %d\n", s.produtos.dados[i].codigo);
-        printf("Descricao: %s\n", s.produtos.dados[i].descricao);
-        printf("Categoria: %s\n", s.produtos.dados[i].categoria);
-        printf("Preco de compra: R$ %.2f\n", s.produtos.dados[i].precoCompra);
-        printf("Margem de lucro: %.2f%%\n", s.produtos.dados[i].margemLucro);
-        printf("Preco de venda: R$ %.2f\n", s.produtos.dados[i].precoVenda);
-        printf("Estoque atual: %d\n", s.produtos.dados[i].estoque);
-        printf("Estoque minimo: %d\n", s.produtos.dados[i].estoqueMinimo);
+        printf("%-46s#%3d\n", "Produto:", i + 1);
+        printf("%-35s%15d\n", "Codigo:", s.produtos.dados[i].codigo);
+        printf("%-15s %34.34s\n", "Descricao:", s.produtos.dados[i].descricao);
+        printf("%-15s %34.34s\n", "Categoria:", s.produtos.dados[i].categoria);
+        printf("%-41sR$ %6.2f\n", "Preco de compra:", s.produtos.dados[i].precoCompra);
+        printf("%-35s%14.2f%%\n", "Margem de lucro:", s.produtos.dados[i].margemLucro);
+        printf("%-41sR$ %6.2f\n", "Preco de venda:", s.produtos.dados[i].precoVenda);
+        printf("%-35s%15d\n", "Estoque atual:", s.produtos.dados[i].estoque);
+        printf("%-35s%15d\n", "Estoque minimo:", s.produtos.dados[i].estoqueMinimo);
         printf("--------------------------------------------------\n");
     }
 }
@@ -1105,9 +1205,7 @@ void listarVendas() {
         return;
     }
 
-    printf("\n==================================================\n");
-    printf("                RELATORIO DE VENDAS               \n");
-    printf("==================================================\n");
+    printf("\n=============== RELATORIO DE VENDAS ==============\n");
 
     for (int i = 0; i < s.vendas.total; i++) {
         char statusTexto[10];
@@ -1117,42 +1215,38 @@ void listarVendas() {
             strcpy(statusTexto, "ABERTO");
         }
 
-        printf("\nVENDA #%d | Cliente Cod: %d | Status: %s\n",
-               s.vendas.dados[i].numeroVenda,
-               s.vendas.dados[i].codigoCliente,
-               statusTexto);
-
-        printf("Itens comprados:\n");
+        printf("%-7s%-2d | %-8s %12.12s | %-7s %6s\n",
+            "Venda #", s.vendas.dados[i].numeroVenda,
+            "Cliente:", s.clientes.dados[buscarClientePorCodigo(s.vendas.dados[i].codigoCliente)].nome,
+            "Status:", statusTexto);
+        printf("--------------------------------------------------\n");
+        printf("%-9.9s | %-9s | %-9s | %-14s\n", "DESCRICAO", "QTD", "PRECO", "TOTAL");
+        printf("--------------------------------------------------\n");
+        
         for (int j = 0; j < s.vendas.dados[i].totalItens; j++) {
-            printf("  - %-20s | Qtd: %-3d | Unit: R$ %-6.2f | Total: R$ %-6.2f\n",
-                   s.vendas.dados[i].itens[j].descricao,
-                   s.vendas.dados[i].itens[j].quantidade,
-                   s.vendas.dados[i].itens[j].precoVenda,
-                   s.vendas.dados[i].itens[j].valorTotalItem);
+            printf("%-9.9s | %9d | R$ %6.2f | R$ %11.2f\n", s.vendas.dados[i].itens[j].descricao, s.vendas.dados[i].itens[j].quantidade, s.vendas.dados[i].itens[j].precoVenda, s.vendas.dados[i].itens[j].valorTotalItem);
         }
-
-        printf("VALOR FINAL DA COMPRA: R$ %.2f\n", s.vendas.dados[i].valorTotal);
+        printf("--------------------------------------------------\n");
+        printf("%-35s R$ %11.2f\n", "VALOR FINAL DA COMPRA:", s.vendas.dados[i].valorTotal);
 
         // Se a venda estiver paga, exibe as informacoes gravadas do pagamento
         if (s.vendas.dados[i].situacao == 'p') {
             for (int k = 0; k < s.pagamentos.total; k++) {
                 if (s.pagamentos.dados[k].numeroVenda == s.vendas.dados[i].numeroVenda) {
                     if (strcmp(s.pagamentos.dados[k].tipo, "d") == 0) {
-                        printf("Forma de Pagamento: Dinheiro | Valor da Venda: R$ %.2f\n", s.pagamentos.dados[k].valorPago);
-                        printf("Valor Entregue: R$ %.2f | Troco: R$ %.2f\n", s.pagamentos.dados[k].valorEntregue, s.pagamentos.dados[k].troco);
+                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Dinheiro", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
+                        printf("%-40s R$ %6.2f\n%-40s R$ %6.2f\n", "Valor Entregue:", s.pagamentos.dados[k].valorEntregue, "Troco:", s.pagamentos.dados[k].troco);
                     } else if (strcmp(s.pagamentos.dados[k].tipo, "c") == 0) {
-                        printf("Forma de Pagamento: Cartao | Valor da Venda: R$ %.2f\n", s.pagamentos.dados[k].valorPago);
+                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Cartao", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
                     } else if (strcmp(s.pagamentos.dados[k].tipo, "dc") == 0) {
-                        printf("Forma de Pagamento: Misto (Dinheiro + Cartao) | Total: R$ %.2f\n", s.pagamentos.dados[k].valorPago);
-                        printf("Recebido em Dinheiro: R$ %.2f | Restante no Cartao: R$ %.2f\n",
-                               s.pagamentos.dados[k].valorEntregue,
-                               s.pagamentos.dados[k].valorPago - s.pagamentos.dados[k].valorEntregue);
+                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Misto (Dinheiro + Cartao)", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
+                        printf("%-40s R$ %6.2f\n%-40s R$ %6.2f\n", "Recebido em Dinheiro:", s.pagamentos.dados[k].valorEntregue, "Restante no Cartao:", s.pagamentos.dados[k].valorPago - s.pagamentos.dados[k].valorEntregue);
                     }
                     break;
                 }
             }
         }
-        printf("--------------------------------------------------\n");
+        printf("==================================================\n");
     }
 }
 
@@ -1215,7 +1309,7 @@ void carregarArquivo() {
 
     // Se nenhum arquivo existir, inicia o sistema zerado
     if (fClientes == NULL && fProdutos == NULL && fVendas == NULL && fPagamentos == NULL) {
-        printf("\nNenhum cadastro anterior encontrado. Iniciando sistema vazio.\n");
+        printf("\nNenhum cadastro anterior encontrado.\nIniciando sistema vazio.\n");
         return;
     }
 

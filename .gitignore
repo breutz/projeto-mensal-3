@@ -1,0 +1,16 @@
+﻿# Executáveis compilados
+*.exe
+*.out
+*.app
+
+# Arquivos de objetos e bibliotecas
+*.o
+*.obj
+
+# Arquivos de dados de teste locais gerados em tempo de execução
+# (Descomente se não quiser subir arquivos .dat ou .txt de testes locais)
+# *.dat
+# *.txt
+
+# Configurações do VS Code locais de usuário
+.vscode/

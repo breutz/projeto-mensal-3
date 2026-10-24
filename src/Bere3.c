@@ -157,7 +157,7 @@ int main() {
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
             continue;
         }
-    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != 'N');
 
     if (resposta == 's' || resposta == 'S') {
         carregarArquivo();
@@ -184,13 +184,13 @@ int main() {
             while (getchar() != '\n'); // Limpa a letra digitada do buffer
             continue;
         }
-    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+    } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != 'N');
 
     if (resposta == 's' || resposta == 'S') {
         salvarArquivo();
     }
 
-    printf("\nEncerrando!\nBere is Nice! (╯°□°）╯︵ ┻━┻\n");
+    printf("\nEncerrando!\nBere is Nice!\n");
     return 0;
 }
 
@@ -235,7 +235,15 @@ void menuPrincipal() {
             menuRelatorios();
             break;
         case 0:
-            printf("\nEncerrando o sistema...\n");
+            if (s.caixaAberto == 1) {
+                printf("\n==================================================\n");
+                printf("AVISO: O sistema esta fechando com caixa ABERTO!\n");
+                printf("Os dados de faturamento foram preservados.\n");
+                printf("Sera necessario reabrir o caixa no proximo inicio.\n");
+                printf("==================================================\n");
+            } else {
+                printf("\nEncerrando o sistema...\n");
+            }
             break;
         default:
             printf("\nErro: Opcao Invalida!\n");
@@ -852,7 +860,7 @@ void novaVenda() {
                 while (getchar() != '\n'); // Limpa a letra digitada do buffer
                 continue;
             }
-        } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+        } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != 'N');
 
     } while (resposta == 's' || resposta == 'S');
 
@@ -999,7 +1007,7 @@ void pagamentoDinheiro(Venda *v, float valorAPagar, float valorCartao) {
                     while (getchar() != '\n'); // Limpa a letra digitada do buffer
                     continue;
                 }
-            } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != "N");
+            } while (resposta != 's' || resposta != 'S' || resposta != 'n' || resposta != 'N');
 
             if (resposta == 's' || resposta == 'S') {
                 // Chama a funcao do cartao passando apenas o valor que falta e o dinheiro entregue
@@ -1070,14 +1078,38 @@ void recuperarVendaAberta() {
     printf("\n=========== VENDAS PENDENTES (ABERTAS) ===========\n");
 
     for (int i = 0; i < s.vendas.total; i++) {
-        if (s.vendas.dados[i].situacao == 'a') {
-            printf("Venda #%d | Cliente: %d | Total: R$ %.2f | Itens: %d\n",
-                   s.vendas.dados[i].numeroVenda,
-                   s.vendas.dados[i].codigoCliente,
-                   s.vendas.dados[i].valorTotal,
-                   s.vendas.dados[i].totalItens);
-            totalAbertas++;
+        if (s.vendas.dados[i].situacao != 'a') {
+            continue; 
         }
+        totalAbertas++;
+
+        char cliente[50];
+
+        if (s.vendas.dados[i].codigoCliente == 0 ) {
+            strcpy(cliente, "AVULSO");
+        } else {
+            int posCliente = buscarClientePorCodigo(s.vendas.dados[i].codigoCliente);
+            if (posCliente != -1) {
+                strcpy(cliente, s.clientes.dados[posCliente].nome);
+            } else {
+                strcpy(cliente, "N/A");
+            }
+        }
+
+        printf("%-7s%-2d | %-8s %12.12s | %-7s %6s\n",
+            "Venda #", s.vendas.dados[i].numeroVenda,
+            "Cliente:", cliente,
+            "Status:", "ABERTO");
+        printf("--------------------------------------------------\n");
+        printf("%-9.9s | %-9s | %-9s | %-14s\n", "DESCRICAO", "QTD", "PRECO", "TOTAL");
+        printf("--------------------------------------------------\n");
+        
+        for (int j = 0; j < s.vendas.dados[i].totalItens; j++) {
+            printf("%-9.9s | %9d | R$ %6.2f | R$ %11.2f\n", s.vendas.dados[i].itens[j].descricao, s.vendas.dados[i].itens[j].quantidade, s.vendas.dados[i].itens[j].precoVenda, s.vendas.dados[i].itens[j].valorTotalItem);
+        }
+        printf("--------------------------------------------------\n");
+        printf("%-35s R$ %11.2f\n", "VALOR FINAL DA COMPRA:", s.vendas.dados[i].valorTotal);
+        printf("==================================================\n");
     }
 
     if (totalAbertas == 0) {
@@ -1085,17 +1117,24 @@ void recuperarVendaAberta() {
         return;
     }
 
-    int numeroEscolhido = 0;
-    printf("\nDigite o numero da venda a pagar (0 = voltar): ");
-    scanf("%d", &numeroEscolhido);
+    int opcao = 0;
+    do {printf("\nDigite o numero da venda a pagar (0 = voltar): ");
+        if (scanf("%d", &opcao) != 1) {
+            printf("\nERRO: Digite apenas numeros!\n");
+            while (getchar() != '\n'); // Limpa a letra digitada do buffer
+            opcao = -1; // Força a repetir o loop
+            continue;
+        }
+    } while (opcao == -1);
+    
 
-    if (numeroEscolhido == 0) {
+    if (opcao == 0) {
         return;
     }
 
     int posicaoVenda = -1;
     for (int i = 0; i < s.vendas.total; i++) {
-        if (s.vendas.dados[i].numeroVenda == numeroEscolhido && s.vendas.dados[i].situacao == 'a') {
+        if (s.vendas.dados[i].numeroVenda == opcao && s.vendas.dados[i].situacao == 'a') {
             posicaoVenda = i;
             break;
         }
@@ -1209,6 +1248,13 @@ void listarVendas() {
 
     for (int i = 0; i < s.vendas.total; i++) {
         char statusTexto[10];
+        char cliente[50];
+
+        if (s.vendas.dados[i].codigoCliente == 0 ) {
+            strcpy(cliente, "AVULSO");
+        } else {
+            strcpy(cliente, s.clientes.dados[buscarClientePorCodigo(s.vendas.dados[i].codigoCliente)].nome);
+        }
         if (s.vendas.dados[i].situacao == 'p') {
             strcpy(statusTexto, "PAGO");
         } else {
@@ -1217,7 +1263,7 @@ void listarVendas() {
 
         printf("%-7s%-2d | %-8s %12.12s | %-7s %6s\n",
             "Venda #", s.vendas.dados[i].numeroVenda,
-            "Cliente:", s.clientes.dados[buscarClientePorCodigo(s.vendas.dados[i].codigoCliente)].nome,
+            "Cliente:", cliente,
             "Status:", statusTexto);
         printf("--------------------------------------------------\n");
         printf("%-9.9s | %-9s | %-9s | %-14s\n", "DESCRICAO", "QTD", "PRECO", "TOTAL");
@@ -1234,13 +1280,13 @@ void listarVendas() {
             for (int k = 0; k < s.pagamentos.total; k++) {
                 if (s.pagamentos.dados[k].numeroVenda == s.vendas.dados[i].numeroVenda) {
                     if (strcmp(s.pagamentos.dados[k].tipo, "d") == 0) {
-                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Dinheiro", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
-                        printf("%-40s R$ %6.2f\n%-40s R$ %6.2f\n", "Valor Entregue:", s.pagamentos.dados[k].valorEntregue, "Troco:", s.pagamentos.dados[k].troco);
+                        printf("%-20s%30s\n%-35s R$ %11.2f\n", "Forma de Pagamento: ", "Dinheiro", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
+                        printf("%-35s R$ %11.2f\n%-35s R$ %11.2f\n", "Valor Entregue:", s.pagamentos.dados[k].valorEntregue, "Troco:", s.pagamentos.dados[k].troco);
                     } else if (strcmp(s.pagamentos.dados[k].tipo, "c") == 0) {
-                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Cartao", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
+                        printf("%-20s%30s\n%-35s R$ %11.2f\n", "Forma de Pagamento: ", "Cartao", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
                     } else if (strcmp(s.pagamentos.dados[k].tipo, "dc") == 0) {
-                        printf("%-20s%30s\n%-40s R$ %6.2f\n", "Forma de Pagamento: ", "Misto (Dinheiro + Cartao)", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
-                        printf("%-40s R$ %6.2f\n%-40s R$ %6.2f\n", "Recebido em Dinheiro:", s.pagamentos.dados[k].valorEntregue, "Restante no Cartao:", s.pagamentos.dados[k].valorPago - s.pagamentos.dados[k].valorEntregue);
+                        printf("%-20s%30s\n%-35s R$ %11.2f\n", "Forma de Pagamento: ", "Misto (Dinheiro + Cartao)", "Valor da Venda:", s.pagamentos.dados[k].valorPago);
+                        printf("%-35s R$ %11.2f\n%-35s R$ %11.2f\n", "Recebido em Dinheiro:", s.pagamentos.dados[k].valorEntregue, "Restante no Cartao:", s.pagamentos.dados[k].valorPago - s.pagamentos.dados[k].valorEntregue);
                     }
                     break;
                 }
@@ -1356,8 +1402,11 @@ void carregarArquivo() {
     }
 
     printf("\nDados carregados com sucesso!\n");
-    printf("Clientes: %d | Produtos: %d | Vendas: %d | Pagamentos: %d\n", 
-           s.clientes.total, s.produtos.total, s.vendas.total, s.pagamentos.total);
+    printf("%-35s%15d\n%-35s%15d\n%-35s%15d\n%-35s%15d\n", 
+        "Clientes:", s.clientes.total,
+        "Produtos:", s.produtos.total,
+        "Vendas:", s.vendas.total,
+        "Pagamentos:", s.pagamentos.total);
 }
 
 
